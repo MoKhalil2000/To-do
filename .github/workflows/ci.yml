@@ -2,54 +2,63 @@ name: Laravel CI
 
 on:
   push:
-    branches:
-      - main  # Of de naam van de branch die je gebruikt
+    branches: [ main ]
   pull_request:
-    branches:
-      - main  # Of de naam van de branch die je gebruikt
+    branches: [ main ]
 
 jobs:
-  build:
+  laravel-tests:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    - name: 📥 Checkout code
+      uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'  # De Node.js versie die je gebruikt, bijvoorbeeld 14
-
-    - name: Install Node dependencies
-      run: |
-        npm install  # Installeer de npm dependencies
-
-    - name: Build assets
-      run: |
-        npm run build  # Bouw de assets (Vite compileert de assets)
-
-    - name: Set up PHP
+    - name: 🔧 Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.0'  # De versie van PHP die je gebruikt
+        php-version: '8.2'
+        extensions: mbstring, bcmath, pdo, pdo_mysql
 
-    - name: Install Composer dependencies
-      run: |
-        composer install  # Installeer de PHP dependencies
+    - name: 📦 Install Composer dependencies
+      run: composer install --no-progress --prefer-dist
 
-    - name: Cache Composer dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.composer/cache
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
+    - name: 📄 Copy .env file
+      run: cp .env.example .env
 
-    - name: Run migrations
-      run: |
-        php artisan migrate --env=testing  # Voer migraties uit voor de testdatabase
+    - name: 🔑 Generate app key
+      run: php artisan key:generate
 
-    - name: Run tests
-      run: |
-        php artisan test  # Draai de tests
+    - name: 🛠️ Run migrations
+      run: php artisan migrate --force
+      env:
+        DB_CONNECTION: mysql
+        DB_HOST: 127.0.0.1
+        DB_PORT: 3306
+        DB_DATABASE: test
+        DB_USERNAME: root
+        DB_PASSWORD: root
+
+    - name: ✅ Run PHPUnit tests
+      run: php artisan test
+
+    - name: 🧹 Run Laravel Pint
+      run: ./vendor/bin/pint
+
+    - name: 📦 Create zip-release (optioneel)
+      if: github.ref == 'refs/heads/main'
+      run: zip -r laravel-build.zip .
