@@ -94,7 +94,7 @@
             @endforelse
         </ul>
     </div>
-    
+    hello
 </body>
 @if (app()->environment() !== 'testing')
     <script src="{{ mix('/js/app.js') }}"></script>
