@@ -10,7 +10,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     permissions:
-    contents: write
+     contents: write
 
     steps:
       - name: 📥 Checkout code
