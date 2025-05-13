@@ -4,13 +4,11 @@ on:
   push:
     branches: [main]
     tags:
-      - 'v*.*.*'  # Bijvoorbeeld: v1.0.0
+      - 'v*.*.*'  # v1.0.0 etc.
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    permissions:
-     contents: write
 
     steps:
       - name: 📥 Checkout code
@@ -63,5 +61,6 @@ jobs:
           body: |
             ✅ Automatisch gegenereerde release voor versie ${{ github.ref_name }}  
             Bekijk changelog en wijzigingen op basis van commits.
+
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # Gebruik je Personal Access Token hier
