@@ -15,17 +15,4 @@ jobs:
 
       - name: 📂 Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /var/www/jouw-projectmap
-            git pull origin main
-            cp .env.production .env
-            php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            npm install --production
-            npm run build
+       
