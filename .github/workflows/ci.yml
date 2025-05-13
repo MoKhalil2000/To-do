@@ -63,6 +63,4 @@ jobs:
             Bekijk changelog en wijzigingen op basis van commits.
 
         env:
-  GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
