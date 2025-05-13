@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     tags:
-      - 'v*.*.*'  # v1.0.0 etc.
+      - 'v*.*.*'  # Bijvoorbeeld: v1.0.0
 
 jobs:
   build-and-test:
@@ -61,6 +61,5 @@ jobs:
           body: |
             ✅ Automatisch gegenereerde release voor versie ${{ github.ref_name }}  
             Bekijk changelog en wijzigingen op basis van commits.
-
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
