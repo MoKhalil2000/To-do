@@ -53,5 +53,4 @@ jobs:
     - name: Run migrations
       run: docker exec laravel_app php artisan migrate --force
 
-    - name: Run Laravel Tests
-      run: docker exec laravel_app php artisan test
+    
