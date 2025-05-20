@@ -16,11 +16,11 @@ jobs:
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        username: ${{ secrets.DOCKERHUB_mokhalil1 }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Build Docker image
-      run: docker build -t username/laravel-app:latest .
+      run: docker build -t mokhalil1/laravel-app:latest .
 
     - name: Push Docker image
-      run: docker push username/laravel-app:latest
+      run: docker push mokhalil1/laravel-app:latest
