@@ -1,0 +1,54 @@
+name: Laravel Docker CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  laravel-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: tedolijst
+          MYSQL_USER: laravel
+          MYSQL_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker containers
+      run: docker-compose -f docker-compose.yml up -d --build
+
+    - name: Wait for DB to be ready
+      run: |
+        echo "⏳ Wachten op MySQL..."
+        sleep 20
+
+    - name: Run composer install
+      run: docker exec laravel_app composer install
+
+    - name: Generate app key
+      run: docker exec laravel_app php artisan key:generate
+
+    - name: Run migrations
+      run: docker exec laravel_app php artisan migrate --force
+
+    - name: (Optioneel) Run tests
+      run: docker exec laravel_app php artisan test

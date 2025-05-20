@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
 # Installeer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Laravel directory rechten
-RUN chown -R www-data:www-data /var/www && a2enmod rewrite
+# Kopieer apache config naar juiste locatie
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
 # Zet werkmap
 WORKDIR /var/www/html
@@ -21,5 +21,10 @@ WORKDIR /var/www/html
 # Kopieer Laravel-project
 COPY . .
 
-# Laravel rechten fix
-RUN chmod -R 755 /var/www/html && chown -R www-data:www-data /var/www/html
+# Laravel directory rechten
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Zet mod_rewrite aan en herstart Apache
+RUN a2enmod rewrite \
+    && service apache2 restart
