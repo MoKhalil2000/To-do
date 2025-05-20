@@ -34,7 +34,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
 
     - name: Build Docker containers
-      run: docker-compose -f docker-compose.yml up -d --build
+      run: docker compose -f docker-compose.yml up -d --build
 
     - name: Wait for DB to be ready
       run: |
