@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     curl \
     git \
+    ca-certificates \
     && docker-php-ext-install
 
 # Installeer Node.js (LTS) en npm
