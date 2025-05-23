@@ -7,23 +7,31 @@ RUN apt-get update && apt-get install -y \
     zip \
     curl \
     git \
-    && docker-php-ext-install zip
+    && docker-php-ext-install
+
+# Installeer Node.js (LTS) en npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm
 
 # Installeer Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Kopieer Apache config naar juiste locatie
-COPY apache.conf /etc/apache2/sites-available/000-default.conf
-
 # Zet werkmap
 WORKDIR /var/www/html
 
-# Kopieer Laravel-project
+# Kopieer Laravel-projectbestanden
 COPY . .
 
-# Laravel directory rechten
+# Zet bestandsrechten
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
+
+# Installeer PHP/Laravel-afhankelijkheden
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# Installeer JS-afhankelijkheden
+RUN npm install && npm run build
 
 
 
