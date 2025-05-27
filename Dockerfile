@@ -1,7 +1,7 @@
 FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y libzip-dev unzip zip curl git ca-certificates \
-    && docker-php-ext-install zip pdo_mysql pdo_sqlite
+    && docker-php-ext-install zip pdo_mysql
 
 # Node.js & npm (indien nodig)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
