@@ -1,7 +1,7 @@
 FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y libzip-dev unzip zip curl git ca-certificates \
-    && docker-php-ext-install zip pdo_mysql
+    && docker-php-ext-install zip pdo_mysql pdo_sqlite
 
 # Node.js & npm (indien nodig)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
@@ -21,5 +21,8 @@ RUN npm install && npm run build
 
 COPY apache.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
+
+COPY .env.example .env
+RUN php artisan key:generate
 
 CMD ["apache2-foreground"]
