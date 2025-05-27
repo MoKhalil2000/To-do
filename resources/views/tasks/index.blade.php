@@ -104,10 +104,5 @@ error_reporting(E_ALL);
     </div>
 
 </body>
-@if (app()->environment() !== 'testing')
-    <script src="{{ mix('/js/app.js') }}"></script>
-    <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
-@endif
-h
 
 </html>
