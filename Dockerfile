@@ -13,9 +13,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 WORKDIR /var/www/html
 COPY . .
 
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 RUN npm install && npm run build
 
@@ -24,5 +21,11 @@ RUN a2enmod rewrite
 
 COPY .env.example .env
 RUN php artisan key:generate
+
+RUN touch database/database.sqlite
+RUN php artisan migrate:fresh --seed
+
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
 CMD ["apache2-foreground"]
